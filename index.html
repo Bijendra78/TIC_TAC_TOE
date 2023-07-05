@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Tic Tac Toe</title>
+  <style>
+    .cell {
+      width: 60px;
+      height: 60px;
+      border: 1px solid black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 48px;
+      cursor: pointer;
+    }
+    #game {
+            display: grid;
+            grid-template-columns: 61px 61px auto;
+            /* background-color: #2196F3; */
+            padding: 1px;
+        }
+  </style>
+</head>
+<body>
+  <h1>Tic Tac Toe</h1>
+  <div id="game">
+    <div class="cell" onclick="playMove(0, 0)"></div>
+    <div class="cell" onclick="playMove(0, 1)"></div>
+    <div class="cell" onclick="playMove(0, 2)"></div>
+    <div class="cell" onclick="playMove(1, 0)"></div>
+    <div class="cell" onclick="playMove(1, 1)"></div>
+    <div class="cell" onclick="playMove(1, 2)"></div>
+    <div class="cell" onclick="playMove(2, 0)"></div>
+    <div class="cell" onclick="playMove(2, 1)"></div>
+    <div class="cell" onclick="playMove(2, 2)"></div>
+  </div>
+  <p id="turn"></p>
+  <p id="winner"></p>
+  <button onclick="restartGame()">Restart</button>
+
+  <script>
+    var currentPlayer = 'X';
+    var gameEnded = false;
+    var board = [
+      ['', '', ''],
+      ['', '', ''],
+      ['', '', '']
+    ];
+
+    function playMove(row, col) {
+      if (!gameEnded && board[row][col] === '') {
+        board[row][col] = currentPlayer;
+        document.getElementById("game").children[row * 3 + col].innerText = currentPlayer;
+        checkGameStatus();
+        currentPlayer = (currentPlayer === 'X') ? 'O' : 'X';
+        document.getElementById("turn").innerText = "Current Turn: " + currentPlayer;
+      }
+    }
+
+    function checkGameStatus() {
+      // Check rows
+      for (var i = 0; i < 3; i++) {
+        if (board[i][0] === board[i][1] && board[i][0] === board[i][2] && board[i][0] !== '') {
+          endGame(board[i][0]);
+          return;
+        }
+      }
+
+      // Check columns
+      for (var j = 0; j < 3; j++) {
+        if (board[0][j] === board[1][j] && board[0][j] === board[2][j] && board[0][j] !== '') {
+          endGame(board[0][j]);
+          return;
+        }
+      }
+
+      // Check diagonals
+      if ((board[0][0] === board[1][1] && board[0][0] === board[2][2] && board[0][0] !== '') ||
+          (board[0][2] === board[1][1] && board[0][2] === board[2][0] && board[0][2] !== '')) {
+        endGame(board[1][1]);
+        return;
+      }
+
+      // Check for draw
+      var isDraw = true;
+      for (var row = 0; row < 3; row++) {
+        for (var col = 0; col < 3; col++) {
+          if (board[row][col] === '') {
+            isDraw = false;
+            break;
+          }
+        }
+      }
+      if (isDraw) {
+        endGame('draw');
+        return;
+      }
+    }
+
+    function endGame(winner) {
+      gameEnded = true;
+      if (winner === 'draw') {
+        document.getElementById("winner").innerText = "Game ended in a draw!";
+      } else {
+        document.getElementById("winner").innerText = "Player " + winner + " won the game!";
+      }
+    }
+
+    function restartGame() {
+      currentPlayer = 'X';
+      gameEnded = false;
+      board = [
+        ['', '', ''],
+        ['', '', ''],
+        ['', '', '']
+      ];
+      var cells = document.getElementsByClassName("cell");
+      for (var i = 0; i < cells.length; i++) {
+        cells[i].innerText = '';
+      }
+      document.getElementById("turn").innerText = "Current Turn: " + currentPlayer;
+      document.getElementById("winner").innerText = '';
+    }
+  </script>
+</body>
+</html>
